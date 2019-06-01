@@ -1,0 +1,85 @@
+﻿@model BillsListViewModel
+
+<div class="container">
+    <h1>Bills of all family members</h1>
+    <div class="row">
+
+        <form method="post" asp-controller="Bills" asp-action="BillsList" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search" value="@Model.Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <button class="btn btn-success float-lg-right" id="add-bill-btn">Add</button>
+
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th hidden="hidden">Id</th>
+                <th scope="col">#</th>
+                <th scope="col">Description</th>
+                <th scope="col">Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model.Bills)
+            {
+                <tr>
+                    <th hidden="hidden">@item.Id</th>
+                    <th scope="row">@(Model.Bills.IndexOf(item) + 1)</th>
+                    <td>@item.Description</td>
+                    <td>@item.PersonName</td>
+                    <td>@item.BillDate.Value.ToShortDateString()</td>
+                    <td>@item.Amount</td>
+                    <td>
+                        <button class="btn btn-info edit-bill" data-id="@item.Id" data-name="@item.Description">Edit</button>
+                        <button class="btn btn-danger remove-bill" data-id="@item.Id" data-name="@item.Description">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="edit-add-bill-container"></div>
+
+@section scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.edit-bill').click(function () {
+                var url = "/Bills/AddEditBill"; // the url to the controller
+                var id = $(this).attr('data-id'); // the id that's given to each button in the list
+                $.get(url + '/' + id, function (data) {
+                    $('#edit-add-bill-container').html(data);
+                    $('#add-bill-modal').modal();
+                    $.validator.unobtrusive.parse("#add-edit-bill-form");
+                });
+            });
+
+            $('#add-bill-btn').click(function () {
+                var url = "/Bills/AddEditBill"; // the url to the controller
+                $.get(url + '/', function (data) {
+                    $('#edit-add-bill-container').html(data);
+                    $('#add-bill-modal').modal();
+                    $.validator.unobtrusive.parse("#add-edit-bill-form");
+                });
+            });
+
+            $('.remove-bill').click(function () {
+                var id = $(this).attr('data-id');
+                var name = $(this).attr('data-name');
+                var url = "/Bills/DeleteBill";
+                if (confirm('Are you sure you want to delete ' + name + ' bill with id ' + id + '?')) {
+                    $.get(url + '/' + id, function (data) {
+                        location.reload();
+                    });
+                }
+            });
+        });
+    </script>
+}

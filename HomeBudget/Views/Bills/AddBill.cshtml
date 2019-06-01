@@ -1,0 +1,45 @@
+﻿@model AddBillViewModel
+
+<div class="container">
+    <form method="post" asp-controller="Bills" asp-action="AddBill">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group row">
+            <label for="inputDesc" class="col-sm-2 col-form-label">Bill description</label>
+            <div class="col-sm-10">
+                <input asp-for="@Model.Description" type="text" class="form-control" id="inputDesc" placeholder="Description">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="inputAmount" class="col-sm-2 col-form-label">Amount</label>
+            <div class="col-sm-10">
+                <input asp-for="@Model.Amount" type="number" min="1" step="any" class="form-control" id="inputAmount" placeholder="99.99">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPersonDropdown" class="col-sm-2 col-form-label">Person</label>
+            <div class="col-sm-10">
+                <select asp-for="@Model.PersonId" class="form-control" id="inputPersonDropdown">
+                    <option value="1">Default select</option>
+                    <option value="2">Default select 2</option>
+                    <option value="3">Default select 3</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-10">
+                <input asp-for="@Model.BillDate" type="date" class="form-control" id="inputDate" placeholder="mm/dd/yyyy">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
